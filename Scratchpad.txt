@@ -1,0 +1,7 @@
+Screen 1 - Select an action (List, Add, Update, Delete)
+
+Screen 2 - List Projects (go to edit/delete for each project)
+
+Screen 3 - Project View (add/edit/delete)
+
+
