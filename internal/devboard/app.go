@@ -3,7 +3,6 @@ package devboard
 import (
 	"strings"
 
-	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -20,7 +19,7 @@ type app struct {
 	error        string
 	screenState  state
 	projects     []Project
-	projectList  list.Model
+	projectList  ProjectList
 	projectTitle textinput.Model
 }
 
@@ -28,7 +27,6 @@ func NewApp() app {
 	return app{
 		screenState: stateList,
 		projects:    []Project{},
-		projectList: list.New([]list.Item{}, list.NewDefaultDelegate(), 80, 20),
 	}
 }
 
@@ -39,14 +37,12 @@ func (app app) Init() tea.Cmd {
 func (app app) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		app.projectList = NewProjectList(msg.Width, msg.Height - 10)
 	case errMsg:
 		app.error = msg.Error()
 	case projectsMsg:
-		var items []list.Item
-		for _, v := range msg {
-			items = append(items, v)
-		}
-		cmds = append(cmds, app.projectList.SetItems(items))
+		cmds = append(cmds, app.projectList.SetProjects(msg))
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc":
@@ -56,8 +52,7 @@ func (app app) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	var cmd tea.Cmd
-	app.projectList, cmd = app.projectList.Update(msg)
+	cmd := app.projectList.Update(msg)
 	cmds = append(cmds, cmd)
 
 	return app, tea.Batch(cmds...)
