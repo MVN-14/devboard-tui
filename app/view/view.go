@@ -65,7 +65,13 @@ func New() Model {
 	}
 
 	help := help.New()
-	help.ShowAll = true
+	help.ShowAll = true	
+	help.Styles.ShortDesc = style.HelpDescStyle.Inherit(help.Styles.ShortDesc)
+	help.Styles.ShortKey = style.HelpKeyStyle.Inherit(help.Styles.ShortKey)
+	help.Styles.FullDesc = style.HelpDescStyle.Inherit(help.Styles.FullDesc)
+	help.Styles.FullKey = style.HelpKeyStyle.Inherit(help.Styles.FullKey)
+
+
 
 	return Model{
 		inputs:  inputs,

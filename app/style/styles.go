@@ -14,6 +14,11 @@ const (
 )
 
 var (
+	HelpDescStyle = lipgloss.NewStyle().
+		Foreground(accentSecondary)
+	HelpKeyStyle = lipgloss.NewStyle().
+		Foreground(accentPrimary)
+
 	ListTitleStyle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(accentPrimary)
@@ -37,7 +42,8 @@ var (
 			BorderForeground(borderColor)
 
 	TitleStyle = lipgloss.NewStyle().
-			Bold(true)
+			Bold(true).
+			Foreground(accentPrimary)
 
 	toastStyle = lipgloss.NewStyle().
 			Margin(1).

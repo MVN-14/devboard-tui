@@ -66,10 +66,16 @@ func New() Model {
 		Up:     key.NewBinding(key.WithKeys("up", "k"), key.WithHelp("↑/k", "Up")),
 	}
 
+	help := help.New()
+	help.Styles.ShortDesc = style.HelpDescStyle.Inherit(help.Styles.ShortDesc)
+	help.Styles.ShortKey = style.HelpKeyStyle.Inherit(help.Styles.ShortKey)
+	help.Styles.FullDesc = style.HelpDescStyle.Inherit(help.Styles.FullDesc)
+	help.Styles.FullKey = style.HelpKeyStyle.Inherit(help.Styles.FullKey)
+
 	return Model{
 		list: l,
 		keys: keys,
-		help: help.New(),
+		help: help,
 	}
 }
 
