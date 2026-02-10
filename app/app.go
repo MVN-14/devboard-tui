@@ -22,7 +22,7 @@ type Model struct {
 	projectView view.Model
 	quitting    bool
 	screen      screen.Screen
-	toast		toast.Model
+	toast       toast.Model
 	width       int
 	height      int
 }
@@ -39,10 +39,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
-		m.projectList.SetSize(
-			m.width-widthOffset,
-			m.height-heightOffset,
-		)
+		m.projectList.SetSize( m.width-widthOffset, m.height-heightOffset)
+		m.projectView.SetSize(m.width-widthOffset, m.height-heightOffset)
 	case tea.KeyMsg:
 		if msg.String() == "ctrl+c" {
 			m.quitting = true
@@ -58,7 +56,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case command.SuccessMsg:
 		m.toast.SetToast(msg.Str, toast.Success)
 	}
-	
+
 	m.toast.Update()
 
 	switch m.screen {
@@ -94,8 +92,8 @@ func (m Model) View() string {
 	case screen.ScreenView:
 		view += m.projectView.View()
 	}
-	
-	return m.toast.Render(style.RenderView(view), m.width - widthOffset)
+
+	return m.toast.Render(style.RenderView(view), m.width-widthOffset)
 }
 
 func New() Model {

@@ -1,6 +1,8 @@
 package view
 
 import (
+	"strings"
+
 	"github.com/MVN-14/devboard-tui/app/command"
 	"github.com/MVN-14/devboard-tui/app/screen"
 	"github.com/MVN-14/devboard-tui/app/style"
@@ -43,6 +45,8 @@ type Model struct {
 	help    help.Model
 	keys    keyMap
 	project devboard.Project
+	width   int
+	height  int
 }
 
 func New() Model {
@@ -65,18 +69,18 @@ func New() Model {
 	}
 
 	help := help.New()
-	help.ShowAll = true	
+	help.ShowAll = true
 	help.Styles.ShortDesc = style.HelpDescStyle.Inherit(help.Styles.ShortDesc)
 	help.Styles.ShortKey = style.HelpKeyStyle.Inherit(help.Styles.ShortKey)
 	help.Styles.FullDesc = style.HelpDescStyle.Inherit(help.Styles.FullDesc)
 	help.Styles.FullKey = style.HelpKeyStyle.Inherit(help.Styles.FullKey)
 
-
-
 	return Model{
 		inputs:  inputs,
 		focused: nameInput,
 		help:    help,
+		width:   0,
+		height:  0,
 		keys: keyMap{
 			Next: key.NewBinding(
 				key.WithKeys("tab", "down"),
@@ -94,6 +98,15 @@ func New() Model {
 	}
 }
 
+func (m *Model) SetSize(w, h int) {
+	m.width = w
+	m.height = h
+	for i := range len(m.inputs) {
+		m.inputs[i].Width = m.width
+	}
+
+}
+
 func (m *Model) startEdit(p devboard.Project) tea.Cmd {
 	m.project = p
 	m.inputs[nameInput].SetValue(m.project.Name)
@@ -105,6 +118,7 @@ func (m *Model) startEdit(p devboard.Project) tea.Cmd {
 }
 
 func (m *Model) startAdd() tea.Cmd {
+	m.project.Name = "New Project"
 	m.inputs[nameInput].SetValue("")
 	m.inputs[pathInput].SetValue("")
 	m.inputs[cmdInput].SetValue("")
@@ -192,6 +206,8 @@ func (m Model) View() string {
 	view += m.inputs[pathInput].View() + "\n"
 	view += m.inputs[cmdInput].View() + "\n"
 
+	helpView := m.help.View(m.keys)
+	view += strings.Repeat("\n", m.height-strings.Count(view, "\n")-strings.Count(helpView, "\n"))
 	view += "\n" + m.help.View(m.keys)
 
 	return view

@@ -15,9 +15,9 @@ const (
 
 var (
 	HelpDescStyle = lipgloss.NewStyle().
-		Foreground(accentSecondary)
+			Foreground(accentSecondary)
 	HelpKeyStyle = lipgloss.NewStyle().
-		Foreground(accentPrimary)
+			Foreground(accentPrimary)
 
 	ListTitleStyle = lipgloss.NewStyle().
 			Bold(true).
@@ -57,15 +57,15 @@ var (
 			Background(err)
 
 	InputFocusedText = lipgloss.NewStyle().
-			Bold(true)
+				Bold(true)
 	InputDefaultText = lipgloss.NewStyle().
-			Bold(false)
+				Bold(false)
 	InputFocusedPrompt = lipgloss.NewStyle().
-			Foreground(accentPrimary).
-			Bold(true)
+				Foreground(accentPrimary).
+				Bold(true)
 	InputDefaultPrompt = lipgloss.NewStyle().
-			Foreground(fgColor).
-			Bold(false)
+				Foreground(fgColor).
+				Bold(false)
 )
 
 func RenderView(v string) string {
