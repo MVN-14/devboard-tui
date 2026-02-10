@@ -43,10 +43,10 @@ var (
 			Margin(1).
 			Padding(1, 0).
 			Bold(true).
+			AlignHorizontal(lipgloss.Center).
 			Foreground(lipgloss.Color("#1f1f1f"))
 	ToastSuccess = toastStyle.
-			Background(success).
-			AlignHorizontal(lipgloss.Center)
+			Background(success)
 	ToastError = toastStyle.
 			Background(err)
 )

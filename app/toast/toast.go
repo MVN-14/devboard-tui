@@ -47,7 +47,7 @@ func (m Model) Render(v string, w int) string {
 
 	s := style.ToastSuccess.Width(w)
 	if m.toast.toastType == Error {
-		s = style.ToastError
+		s = style.ToastError.Width(w)
 	}
 	toast := s.Render(m.toast.msg)
 

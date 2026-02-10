@@ -12,7 +12,7 @@ func Devboard(args ...string) ([]byte, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
-		return []byte{}, fmt.Errorf("devboard %s error:\n%s\n", args, out)
+		return []byte{}, fmt.Errorf("devboard %s error:%s %s", args, out, cmd.Stderr)
 	}
 
 	return out, nil
