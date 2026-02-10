@@ -2,9 +2,12 @@ package toast
 
 import (
 	"strings"
+	"time"
 
 	"github.com/MVN-14/devboard-tui/app/style"
 )
+
+const duration = time.Second * 5
 
 type ToastType int
 
@@ -20,29 +23,34 @@ type Model struct {
 type toast struct {
 	msg       string
 	toastType ToastType
+	start	  time.Time
 }
 
 func (m *Model) SetToast(msg string, t ToastType) {
-	m.toast = toast{msg: msg, toastType: t}
+	m.toast = toast{msg: msg, toastType: t, start: time.Now()}
 }
 
-func (m Model) Update() {
+func (m *Model) Update() {
 	if m.toast.msg == "" {
 		return
 	}
+
+	if time.Since(m.toast.start) > duration {
+		m.toast = toast{}
+	}
 }
 
-func (m Model) Render(v string) string {
+func (m Model) Render(v string, w int) string {
 	if m.toast.msg == "" {
 		return v
 	}
 
-	s := style.ToastSuccess
+	s := style.ToastSuccess.Width(w)
 	if m.toast.toastType == Error {
 		s = style.ToastError
 	}
 	toast := s.Render(m.toast.msg)
-	
+
 	return overlay(v, toast)
 }
 
@@ -50,19 +58,7 @@ func overlay(bg, fg string) string {
 	bgLines := strings.Split(bg, "\n")
 	fgLines := strings.Split(fg, "\n")
 	
-	for i, line := range fgLines {
-		if i > len(bgLines) {
-			bgLines = append(bgLines, line)
-			continue
-		}
-
-		if len(bgLines[i]) > len(line) {
-			newLine := line + bgLines[i][len(line):]
-			bgLines[i] = newLine
-		} else {
-			bgLines[i] = line
-		}
-	}
+	copy(bgLines, fgLines)
 
 	return strings.Join(bgLines, "\n")
 }

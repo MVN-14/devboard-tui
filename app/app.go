@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/MVN-14/devboard-tui/app/command"
 	"github.com/MVN-14/devboard-tui/app/list"
@@ -33,7 +32,6 @@ func (m Model) Init() tea.Cmd {
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	log.Println("Update")
 	cmds := []tea.Cmd{}
 	var cmd tea.Cmd
 
@@ -45,8 +43,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.width-widthOffset,
 			m.height-heightOffset,
 		)
-
-		m.toast.SetToast("Toast test", toast.Success)
 	case tea.KeyMsg:
 		if msg.String() == "ctrl+c" {
 			m.quitting = true
@@ -58,10 +54,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case command.ScreenMsg:
 		m.screen = msg.Screen
 	case command.ErrMsg:
-		m.errMsg = msg.Err.Error()
+		m.toast.SetToast(msg.Err.Error(), toast.Error)
 	case command.SuccessMsg:
-		m.msg = msg.Str
+		m.toast.SetToast(msg.Str, toast.Success)
 	}
+	
+	m.toast.Update()
 
 	switch m.screen {
 	case screen.ScreenList:
@@ -97,7 +95,7 @@ func (m Model) View() string {
 		view += m.projectView.View()
 	}
 	
-	return m.toast.Render(style.RenderView(view))
+	return m.toast.Render(style.RenderView(view), m.width - widthOffset)
 }
 
 func New() Model {

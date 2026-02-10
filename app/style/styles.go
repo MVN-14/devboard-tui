@@ -9,8 +9,8 @@ const (
 	borderColor     = lipgloss.Color("#402A2C")
 	accentPrimary   = lipgloss.Color("#D8315B")
 	accentSecondary = lipgloss.Color("#006992")
-	success		    = lipgloss.Color("#00B16A")
-	err				= lipgloss.Color("#DC0E0E")
+	success         = lipgloss.Color("#00B16A")
+	err             = lipgloss.Color("#DC0E0E")
 )
 
 var (
@@ -19,10 +19,10 @@ var (
 			Foreground(accentPrimary)
 
 	ListItemTitleSel = lipgloss.NewStyle().
-			Foreground(accentPrimary).
-			BorderForeground(accentPrimary).
-			Border(lipgloss.ThickBorder(), false, false, false, true).
-			Bold(true)
+				Foreground(accentPrimary).
+				BorderForeground(accentPrimary).
+				Border(lipgloss.ThickBorder(), false, false, false, true).
+				Bold(true)
 	ListItemDescSel = lipgloss.NewStyle().
 			BorderForeground(accentPrimary).
 			Border(lipgloss.ThickBorder(), false, false, false, true).
@@ -38,17 +38,17 @@ var (
 
 	TitleStyle = lipgloss.NewStyle().
 			Bold(true)
-	
+
 	toastStyle = lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder(), true, true, true, true).
-			Padding(0, 1).
-			Bold(true)
+			Margin(1).
+			Padding(1, 0).
+			Bold(true).
+			Foreground(lipgloss.Color("#1f1f1f"))
 	ToastSuccess = toastStyle.
-			BorderForeground(success).
-			Foreground(success)
+			Background(success).
+			AlignHorizontal(lipgloss.Center)
 	ToastError = toastStyle.
-			BorderForeground(err).
-			Foreground(err)
+			Background(err)
 )
 
 func RenderView(v string) string {
