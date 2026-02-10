@@ -49,6 +49,17 @@ var (
 			Background(success)
 	ToastError = toastStyle.
 			Background(err)
+
+	InputFocusedText = lipgloss.NewStyle().
+			Bold(true)
+	InputDefaultText = lipgloss.NewStyle().
+			Bold(false)
+	InputFocusedPrompt = lipgloss.NewStyle().
+			Foreground(accentPrimary).
+			Bold(true)
+	InputDefaultPrompt = lipgloss.NewStyle().
+			Foreground(fgColor).
+			Bold(false)
 )
 
 func RenderView(v string) string {
