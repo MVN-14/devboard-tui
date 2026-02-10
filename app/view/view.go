@@ -56,7 +56,7 @@ func New() Model {
 	inputs[cmdInput].Placeholder = "Open Comand"
 
 	for i := range len(inputs) {
-		inputs[i].Width = 20	
+		inputs[i].Width = 50	
 	}
 
 	help := help.New()
