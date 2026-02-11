@@ -66,6 +66,11 @@ var (
 	InputDefaultPrompt = lipgloss.NewStyle().
 				Foreground(fgColor).
 				Bold(false)
+
+	ConfirmationStyle = lipgloss.NewStyle().
+				Foreground(accentSecondary).
+				AlignHorizontal(lipgloss.Center).
+				Bold(true)
 )
 
 func RenderView(v string) string {
