@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"github.com/MVN-14/devboard-tui/app/command"
 	"github.com/MVN-14/devboard-tui/app/list"
 	"github.com/MVN-14/devboard-tui/app/screen"
@@ -16,15 +14,13 @@ const widthOffset = 2
 const heightOffset = 10
 
 type Model struct {
-	errMsg      string
+	height      int
 	projectList list.Model
-	msg         string
 	projectView view.Model
 	quitting    bool
 	screen      screen.Screen
 	toast       toast.Model
 	width       int
-	height      int
 }
 
 func (m Model) Init() tea.Cmd {
@@ -39,10 +35,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
-		m.projectList.SetSize( m.width-widthOffset, m.height-heightOffset)
+		m.projectList.SetSize(m.width-widthOffset, m.height-heightOffset)
 		m.projectView.SetSize(m.width-widthOffset, m.height-heightOffset)
 	case tea.KeyMsg:
-		if msg.String() == "ctrl+c" {
+		switch {
+		case msg.String() == "ctrl+c":
 			m.quitting = true
 			return m, tea.Quit
 		}
@@ -75,16 +72,7 @@ func (m Model) View() string {
 	if m.quitting {
 		return ""
 	}
-
-	view := style.RenderTitle(m.width-widthOffset, "D E V B O A R D")
-	view += "\n"
-
-	switch {
-	case m.errMsg != "":
-		view += fmt.Sprintf("%s\n", m.errMsg)
-	case m.msg != "":
-		view += fmt.Sprintf("\n%s\n", m.msg)
-	}
+	view := style.RenderTitle(m.width-widthOffset, "D E V B O A R D") + "\n"
 
 	switch m.screen {
 	case screen.ScreenList:
