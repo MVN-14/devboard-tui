@@ -113,7 +113,9 @@ func (m *Model) startEdit(p devboard.Project) tea.Cmd {
 	m.inputs[pathInput].SetValue(m.project.Path)
 	m.inputs[cmdInput].SetValue(m.project.Command)
 	m.focused = nameInput
-	focus(&m.inputs[m.focused])
+	focus(&m.inputs[nameInput])
+	unfocus(&m.inputs[pathInput])
+	unfocus(&m.inputs[cmdInput])
 	return textinput.Blink
 }
 
@@ -123,7 +125,9 @@ func (m *Model) startAdd() tea.Cmd {
 	m.inputs[pathInput].SetValue("")
 	m.inputs[cmdInput].SetValue("")
 	m.focused = nameInput
-	focus(&m.inputs[m.focused])
+	focus(&m.inputs[nameInput])
+	unfocus(&m.inputs[pathInput])
+	unfocus(&m.inputs[cmdInput])
 	return textinput.Blink
 }
 
