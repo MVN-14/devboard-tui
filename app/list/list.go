@@ -1,6 +1,8 @@
 package list
 
 import (
+	"strings"
+
 	"github.com/MVN-14/devboard-tui/app/command"
 	"github.com/MVN-14/devboard-tui/app/screen"
 	"github.com/MVN-14/devboard-tui/app/style"
@@ -36,9 +38,10 @@ func (k keyMap) FullHelp() [][]key.Binding {
 }
 
 type Model struct {
-	list list.Model
-	keys keyMap
-	help help.Model
+	list     list.Model
+	keys     keyMap
+	help     help.Model
+	toDelete *devboard.Project
 }
 
 func New() Model {
@@ -66,10 +69,16 @@ func New() Model {
 		Up:     key.NewBinding(key.WithKeys("up", "k"), key.WithHelp("↑/k", "Up")),
 	}
 
+	help := help.New()
+	help.Styles.ShortDesc = style.HelpDescStyle.Inherit(help.Styles.ShortDesc)
+	help.Styles.ShortKey = style.HelpKeyStyle.Inherit(help.Styles.ShortKey)
+	help.Styles.FullDesc = style.HelpDescStyle.Inherit(help.Styles.FullDesc)
+	help.Styles.FullKey = style.HelpKeyStyle.Inherit(help.Styles.FullKey)
+
 	return Model{
 		list: l,
 		keys: keys,
-		help: help.New(),
+		help: help,
 	}
 }
 
@@ -83,6 +92,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch {
+		case m.toDelete != nil:
+			if strings.ToLower(msg.String()) == "y" {
+				id := m.toDelete.Id
+				m.toDelete = nil
+				return m, command.DeleteProject(id)
+			}
+			if strings.ToLower(msg.String()) == "c" {
+				m.toDelete = nil
+			}
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Edit):
@@ -94,7 +112,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				command.SendAddMsg(),
 				command.SendScreenMsg(screen.ScreenView))
 		case key.Matches(msg, m.keys.Delete):
-			return m, command.DeleteProject(m.GetSelected().Id)	
+			p := m.list.SelectedItem().(ProjectListItem).Project
+			m.toDelete = &p
 		case key.Matches(msg, m.keys.Open):
 			return m, command.OpenProject(m.GetSelected().Id)
 		}
@@ -105,6 +124,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
+	if m.toDelete != nil {
+		return style.ConfirmationStyle.Width(m.list.Width()).Render("Are you sure you want to delete " + m.toDelete.Name + "?\n[y]es/[c]ancel")
+	}
 	return m.list.View() + "\n\n" + m.help.View(m.keys)
 }
 

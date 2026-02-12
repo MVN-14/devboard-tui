@@ -7,7 +7,7 @@ import (
 	"github.com/MVN-14/devboard-tui/app/style"
 )
 
-const duration = time.Second * 5
+const duration = time.Second * 2
 
 type ToastType int
 

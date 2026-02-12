@@ -14,6 +14,11 @@ const (
 )
 
 var (
+	HelpDescStyle = lipgloss.NewStyle().
+			Foreground(accentSecondary)
+	HelpKeyStyle = lipgloss.NewStyle().
+			Foreground(accentPrimary)
+
 	ListTitleStyle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(accentPrimary)
@@ -37,7 +42,8 @@ var (
 			BorderForeground(borderColor)
 
 	TitleStyle = lipgloss.NewStyle().
-			Bold(true)
+			Bold(true).
+			Foreground(accentPrimary)
 
 	toastStyle = lipgloss.NewStyle().
 			Margin(1).
@@ -49,6 +55,22 @@ var (
 			Background(success)
 	ToastError = toastStyle.
 			Background(err)
+
+	InputFocusedText = lipgloss.NewStyle().
+				Bold(true)
+	InputDefaultText = lipgloss.NewStyle().
+				Bold(false)
+	InputFocusedPrompt = lipgloss.NewStyle().
+				Foreground(accentPrimary).
+				Bold(true)
+	InputDefaultPrompt = lipgloss.NewStyle().
+				Foreground(fgColor).
+				Bold(false)
+
+	ConfirmationStyle = lipgloss.NewStyle().
+				Foreground(accentSecondary).
+				AlignHorizontal(lipgloss.Center).
+				Bold(true)
 )
 
 func RenderView(v string) string {

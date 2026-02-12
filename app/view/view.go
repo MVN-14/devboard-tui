@@ -1,6 +1,8 @@
 package view
 
 import (
+	"strings"
+
 	"github.com/MVN-14/devboard-tui/app/command"
 	"github.com/MVN-14/devboard-tui/app/screen"
 	"github.com/MVN-14/devboard-tui/app/style"
@@ -43,6 +45,8 @@ type Model struct {
 	help    help.Model
 	keys    keyMap
 	project devboard.Project
+	width   int
+	height  int
 }
 
 func New() Model {
@@ -51,21 +55,32 @@ func New() Model {
 		textinput.New(),
 		textinput.New(),
 	}
+	inputs[nameInput].Prompt = "Name    > "
 	inputs[nameInput].Placeholder = "Project Name"
+
+	inputs[pathInput].Prompt = "Path    > "
 	inputs[pathInput].Placeholder = "Project Path"
+
+	inputs[cmdInput].Prompt = "Command > "
 	inputs[cmdInput].Placeholder = "Open Comand"
 
 	for i := range len(inputs) {
-		inputs[i].Width = 20	
+		inputs[i].Width = 50
 	}
 
 	help := help.New()
 	help.ShowAll = true
+	help.Styles.ShortDesc = style.HelpDescStyle.Inherit(help.Styles.ShortDesc)
+	help.Styles.ShortKey = style.HelpKeyStyle.Inherit(help.Styles.ShortKey)
+	help.Styles.FullDesc = style.HelpDescStyle.Inherit(help.Styles.FullDesc)
+	help.Styles.FullKey = style.HelpKeyStyle.Inherit(help.Styles.FullKey)
 
 	return Model{
 		inputs:  inputs,
 		focused: nameInput,
 		help:    help,
+		width:   0,
+		height:  0,
 		keys: keyMap{
 			Next: key.NewBinding(
 				key.WithKeys("tab", "down"),
@@ -83,43 +98,70 @@ func New() Model {
 	}
 }
 
+func (m *Model) SetSize(w, h int) {
+	m.width = w
+	m.height = h
+	for i := range len(m.inputs) {
+		m.inputs[i].Width = m.width
+	}
+
+}
+
 func (m *Model) startEdit(p devboard.Project) tea.Cmd {
 	m.project = p
 	m.inputs[nameInput].SetValue(m.project.Name)
 	m.inputs[pathInput].SetValue(m.project.Path)
 	m.inputs[cmdInput].SetValue(m.project.Command)
 	m.focused = nameInput
-	m.inputs[m.focused].Focus()
+	focus(&m.inputs[nameInput])
+	unfocus(&m.inputs[pathInput])
+	unfocus(&m.inputs[cmdInput])
 	return textinput.Blink
 }
 
 func (m *Model) startAdd() tea.Cmd {
+	m.project.Name = "New Project"
 	m.inputs[nameInput].SetValue("")
 	m.inputs[pathInput].SetValue("")
 	m.inputs[cmdInput].SetValue("")
 	m.focused = nameInput
-	m.inputs[m.focused].Focus()
+	focus(&m.inputs[nameInput])
+	unfocus(&m.inputs[pathInput])
+	unfocus(&m.inputs[cmdInput])
 	return textinput.Blink
 }
 
+func unfocus(i *textinput.Model) {
+	i.Blur()
+	i.TextStyle = style.InputDefaultText.Inherit(i.TextStyle)
+	i.PromptStyle = style.InputDefaultPrompt
+}
+
+func focus(i *textinput.Model) {
+	i.Focus()
+	i.TextStyle = style.InputFocusedText.Inherit(i.TextStyle)
+	i.PromptStyle = style.InputFocusedPrompt
+}
+
 func (m *Model) focusNext() {
-	m.inputs[m.focused].Blur()
+	unfocus(&m.inputs[m.focused])
 	if m.focused == cmdInput {
 		m.focused = nameInput
 	} else {
 		m.focused++
 	}
-	m.inputs[m.focused].Focus()
+
+	focus(&m.inputs[m.focused])
 }
 
 func (m *Model) focusPrev() {
-	m.inputs[m.focused].Blur()
+	unfocus(&m.inputs[m.focused])
 	if m.focused == nameInput {
 		m.focused = cmdInput
 	} else {
 		m.focused--
 	}
-	m.inputs[m.focused].Focus()
+	focus(&m.inputs[m.focused])
 }
 
 func (m *Model) bindInputs() {
@@ -162,15 +204,14 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	view := style.TitleStyle.Render(m.project.Name + "\n")
+	view := style.TitleStyle.Render(m.project.Name+"\n") + "\n"
 
-	view += "\nName:\n"
 	view += m.inputs[nameInput].View() + "\n"
-	view += "Path:\n"
 	view += m.inputs[pathInput].View() + "\n"
-	view += "Command:\n"
 	view += m.inputs[cmdInput].View() + "\n"
 
+	helpView := m.help.View(m.keys)
+	view += strings.Repeat("\n", m.height-strings.Count(view, "\n")-strings.Count(helpView, "\n"))
 	view += "\n" + m.help.View(m.keys)
 
 	return view
