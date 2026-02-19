@@ -120,6 +120,7 @@ func (m *Model) startEdit(p devboard.Project) tea.Cmd {
 }
 
 func (m *Model) startAdd() tea.Cmd {
+	m.project = devboard.Project{}
 	m.project.Name = "New Project"
 	m.inputs[nameInput].SetValue("")
 	m.inputs[pathInput].SetValue("")

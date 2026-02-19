@@ -9,7 +9,9 @@ import (
 )
 
 func main() {
-	tea.LogToFile("debug.log", "debug")
+	if os.Getenv("DEBUG") != "" {
+		tea.LogToFile("debug.log", "debug")
+	}
 	p := tea.NewProgram(app.New())
 	if _, err := p.Run(); err != nil {
 		fmt.Println(err)
