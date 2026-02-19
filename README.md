@@ -1,7 +1,7 @@
 # Devboard TUI
 This is a TUI wrapper for [devboard](https://github.com/MVN-14/devboard-go) to allow for easier terminal interactions
 
-![demo](https://github.com/MVN-14/devboard-tui/demo.gif)
+![demo](demo.gif)
 
 Powered by [Charm tools](https://github.com/charmbracelet):
 - [bubbletea](https://github.com/charmbracelet/bubbletea)/[bubbles](https://github.com/charmbracelet/bubbles) (TUI Framework)
