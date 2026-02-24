@@ -19,7 +19,8 @@ func Devboard(args ...string) ([]byte, error) {
 }
 
 func OpenProject(id int) error {
-	_, err := Devboard("open", strconv.Itoa(id))
+	cmd := exec.Command("devboard", "open", strconv.Itoa(id))
+	err := cmd.Start()
 	if err != nil {
 		return err
 	}
