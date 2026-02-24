@@ -1,6 +1,8 @@
 package app
 
 import (
+	"sort"
+
 	"github.com/MVN-14/devboard-tui/app/command"
 	"github.com/MVN-14/devboard-tui/app/list"
 	"github.com/MVN-14/devboard-tui/app/screen"
@@ -44,6 +46,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case command.LoadMsg:
+		sort.Slice(msg.Projects, func(i, j int) bool {
+			p1, p2 := msg.Projects[i], msg.Projects[j]
+			if p1.OpenedAt == nil {
+				return false
+			}
+			if p2.OpenedAt == nil {
+				return true
+			}
+			return p2.OpenedAt.Before(*p1.OpenedAt)
+		})
 		cmd = m.projectList.SetItems(msg.Projects)
 		cmds = append(cmds, cmd)
 	case command.ScreenMsg:
